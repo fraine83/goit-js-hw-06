@@ -1,41 +1,48 @@
 function getRandomHexColor() {
   return `#${Math.floor(Math.random() * 16777215)
     .toString(16)
-    .padStart(6, 0)}`;
+    .padStart(6, "0")}`;
 }
-const input = document.querySelector('input');
-  const createButton = document.querySelector('[data-create]');
-  const destroyButton = document.querySelector('[data-destroy]');
-  const boxesContainer = document.querySelector('#boxes');
 
-  createButton.addEventListener('click', () => {
-    const amount = Number(input.value);
+const boxCountInput = document.getElementById('boxCountInput');
+const createButton = document.querySelector('[data-create]');
+const destroyButton = document.querySelector('[data-destroy]');
+const boxesContainer = document.getElementById('boxes');
 
-    if (amount > 0 && amount <= 100) {
-      createBoxes(amount);
-    } else {
-      alert('Please enter a number between 1 and 100.');
-    }
-  });
+let currentAmount = 0;
 
-  destroyButton.addEventListener('click', clearBoxes);
+createButton.addEventListener('click', createBoxesFromInput);
+destroyButton.addEventListener('click', destroyBoxes);
+boxCountInput.addEventListener('input', createBoxesFromInput);
 
-  function createBoxes(amount) {
-    const baseSize = 30;
-    let html = '';
+function createBoxesFromInput() {
+  const amount = Number(boxCountInput.value);
+  if (amount > 0 && amount <= 100) {
+    createBoxes(amount);
+    currentAmount = amount;
+  } else {
+    alert('Please enter a number between 1 and 100.');
+  }
+}
 
-    for (let i = 0; i < amount; i++) {
-      const size = baseSize + i * 10;
-      const color = getRandomHexColor();
-      const box = `
-        <div style="width: ${size}px; height: ${size}px; background-color: ${color}"></div>
-      `;
-      html += box;
-    }
+function createBoxes(amount) {
+  const baseSize = 30;
+  let html = '';
 
-    boxesContainer.innerHTML = html;
+  for (let i = 0; i < amount; i++) {
+    const size = baseSize + i * 10;
+    const color = getRandomHexColor();
+    const box = `
+      <div style="width: ${size}px; height: ${size}px; background-color: ${color}"></div>
+    `;
+    html += box;
   }
 
-  function clearBoxes() {
-    boxesContainer.innerHTML = '';
-  }
+  boxesContainer.innerHTML = html;
+}
+
+function destroyBoxes() {
+  boxesContainer.innerHTML = '';
+  boxCountInput.value = '';
+  currentAmount = 0;
+}
